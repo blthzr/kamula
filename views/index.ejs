@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Kamula</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="samu.laaksonen@student.tut.fi">
+        <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/stylesheets/kamula.css" rel="stylesheet">
+    </head>
+    <body>   
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Kamula</h1>
+                    <p>Parasta sitten valmiiksi leikatun leivän</p>
+                </div>
+            </div>
+            <hr>
+                <nav class="navbar navbar-default" role="navigation">
+                  <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                      </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a class="navbar-brand" class="active" href="/">Etusivu</a></li>
+                            <% if (loggedIn) { %>
+                            <li><a href="/users/<%=currentUser%>">Profiili</a></li>
+                            <% } %>
+                        </ul>
+                        <% if (loggedIn) { %>
+                            <form class="navbar-form navbar-right" action="/logout" method="post" role="form">
+                                Hei, <%= currentUser %>
+                                <input type="hidden" name="currentPage" value="index">
+                                <button type="submit" class="btn btn-default">Kirjaudu ulos</button>
+                            </form>
+                        <% } else { %>
+                        
+                        <a style="margin-left: 5px;" class="btn btn-default navbar-btn navbar-right" href="/register">Rekisteröidy</a>
+                        
+                        <form class="navbar-form navbar-right" action="/login" method="post" role="form">
+                            <input type="hidden" name="currentPage" value="index">
+                            <div class="form-group">
+                                <label class="sr-only" for="loginEmail">Käyttäjätunnus</label>
+                                <input name="user" type="user" class="form-control" id="loginUsername" placeholder="Käyttäjätunnus">
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="loginPassword">Salasana</label>
+                                <input name="password" type="password" class="form-control" id="loginPassword" placeholder="Salasana">
+                            </div>
+                            <button type="submit" class="btn btn-default">Kirjaudu</button>
+                        </form>
+                        <% } %>
+                    </div><!-- /.navbar-collapse -->
+                  </div><!-- /.container-fluid -->
+                </nav>
+            <div class="row">
+                <div class="col-md-10 blog-main">
+                    <div id="statusList">
+                        <% for(var status = 0; status < statusMessages.length; status++) {%>
+                        
+                            <div id="status_<%=statusMessages[status]._id%>">
+                                <div class="panel panel-info <%= "kamula-status-public" %>">
+                                    <!-- Default panel contents -->
+                                    <div class="panel-heading">
+                                        <p class="blog-post-meta">
+                                            <%=statusMessages[status].date%>, 
+                                            <a href="/users/<%=statusMessages[status].author%>">
+                                                <%=statusMessages[status].author%>
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <div class="panel-body">
+                                    <p><%=statusMessages[status].body%></p>
+                                    </div>
+
+                                    <!-- List group -->
+                                    <ul class="list-group" id="commentList_<%=statusMessages[status]._id%>" >
+                                    
+                                        <% for(var comment = 0; comment < statusMessages[status].comments.length; comment++) {%>
+                                        
+                                        <li class="list-group-item">
+                                            <div>
+                                                <span><%=statusMessages[status].comments[comment].body%></span>
+                                                <p>
+                                                    <%=statusMessages[status].comments[comment].date%>, 
+                                                    <a href="/users/<%=statusMessages[status].comments[comment].author%>">
+                                                        <%=statusMessages[status].comments[comment].author%>
+                                                    </a>
+                                                </p>
+                                            </div>
+                                        </li>
+                                        
+                                        <% } %>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        <% } %>
+                    </div>
+                </div>
+                <div class="col-md-2 blog-sidebar">
+                    <div class="sidebar-module">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                 <h3 style="margin-bottom: 5px; margin-top: 5px;"><% if (loggedIn){ %> Kaverit <% }else{ %> Käyttäjät <%}%></h3>
+                            </div>
+                            <div class="panel-body" style="padding:0px; border-color: #d9edf7;">
+                                <ul class="list-group" style="margin:0px;">
+                                    <% for(var i = 0; i < users.length; i++) {%>
+                                    <li class="list-group-item" style="border-top-left-radius: 0px; border-top-right-radius: 0px;">
+                                        <h4><a href="/users/<%=users[i]%>"><%= users[i] %></a></h4>
+                                    </li>
+                                    <% } %>
+                                </ul>
+                            </div>
+                        </div>
+                        <% if (loggedIn){ %>
+                        <div>
+                             <h4><a href="/users/">Lisää kavereita</a></h4>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-10 blog-main">
+                    Copyright (C) Samu Laaksonen, kaikki oikeudet pidätetään
+                </div>
+            </div>
+        </div>
+        <!-- NOTE : include local copy if jquery if this ends up being too slow -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/scripts/status.js"></script>
+        
+        <script>
+            $( document ).ready(function() {
+                setRecentStatusMessagesTimeout(5000);
+            });
+        </script>
+    </body>
+</html>

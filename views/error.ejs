@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>Kamula</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="samu.laaksonen@student.tut.fi">
+        <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/stylesheets/kamula.css" rel="stylesheet">
+    </head>
+    <body>   
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Kamula</h1>
+                    <p>Parasta sitten valmiiksi leikatun leivän</p>
+                </div>
+            </div>
+            <hr>
+                <nav class="navbar navbar-default" role="navigation">
+                  <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                      </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a class="navbar-brand" class="active" href="/">Etusivu</a></li>
+                            <% if (loggedIn) { %>
+                            <li><a href="/users/<%=currentUser%>">Profiili</a></li>
+                            <% } %>
+                        </ul>
+                        <% if (loggedIn) { %>
+                            <form class="navbar-form navbar-right" action="/logout" method="post" role="form">
+                                Hei, <%= currentUser %>
+                                <input type="hidden" name="currentPage" value="error">
+                                <button type="submit" class="btn btn-default">Kirjaudu ulos</button>
+                            </form>
+                        <% } else { %>
+                        
+                        <a style="margin-left: 5px;" class="btn btn-default navbar-btn navbar-right" href="/register">Rekisteröidy</a>
+                        
+                        <form class="navbar-form navbar-right" action="/login" method="post" role="form">
+                            <input type="hidden" name="currentPage" value="error">
+                            <div class="form-group">
+                                <label class="sr-only" for="loginEmail">Käyttäjätunnus</label>
+                                <input name="user" type="user" class="form-control" id="loginUsername" placeholder="Käyttäjätunnus">
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="loginPassword">Salasana</label>
+                                <input name="password" type="password" class="form-control" id="loginPassword" placeholder="Salasana">
+                            </div>
+                            <button type="submit" class="btn btn-default">Kirjaudu</button>
+                        </form>
+                        <% } %>
+                                             
+                    </div><!-- /.navbar-collapse -->
+                  </div><!-- /.container-fluid -->
+                </nav>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 blog-main" style="text-align:center;">
+                    <%= reason %>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-10 blog-main">
+                    Copyright (C) Samu Laaksonen, kaikki oikeudet pidätetään
+                </div>
+            </div>
+        </div>
+        <!-- NOTE : include local copy if jquery if this ends up being too slow -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+    </body>
+</html>

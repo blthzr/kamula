@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Kamula</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="samu.laaksonen@student.tut.fi">
+        <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/stylesheets/signin-style.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Kamula</h1>
+                    <p>Parasta sitten valmiiksi leikatun leivän</p>
+                </div>
+            </div>
+            <hr>
+                <nav class="navbar navbar-default" role="navigation">
+                  <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                      </button>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li><a class="navbar-brand" class="active" href="/">Etusivu</a></li>
+                            <% if (loggedIn) { %>
+                            <li><a href="/users/<%=currentUser%>">Profiili</a></li>
+                            <% } %>
+                        </ul>
+                        <% if (loggedIn) { %>
+                            <form class="navbar-form navbar-right" action="/logout" method="post" role="form">
+                                Hei, <%= currentUser %>
+                                <input type="hidden" name="currentPage" value="register">
+                                <button type="submit" class="btn btn-default">Kirjaudu ulos</button>
+                            </form>
+                        <% } else { %>
+                        
+                        <form class="navbar-form navbar-right" action="/login" method="post" role="form">
+                            <input type="hidden" name="currentPage" value="register">
+                            <div class="form-group">
+                                <label class="sr-only" for="loginEmail">Käyttäjätunnus</label>
+                                <input name="user" type="user" class="form-control" id="loginUsername" placeholder="Käyttäjätunnus">
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="loginPassword">Salasana</label>
+                                <input name="password" type="password" class="form-control" id="loginPassword" placeholder="Salasana">
+                            </div>
+                            <button type="submit" class="btn btn-default">Kirjaudu</button>
+                        </form>
+                        <% } %>
+                    </div><!-- /.navbar-collapse -->
+                  </div><!-- /.container-fluid -->
+                </nav>
+            <hr>
+            <div class="row">
+                <div class="col-md-12 blog-main">
+                    <form class="form-signin" action="/register" method="post" role="form" id="registerForm">
+                        <h2 class="form-signin-heading" style="text-align:center">Rekisteröi tunnuksesi jo tänään</h2>
+                        
+                        <div id="nameController">
+                            <input id="name" name="name" type="name" class="form-control" placeholder="Nimi" required autofocus>
+                        </div>
+                        <input id="email" name="email" type="email" class="form-control" placeholder="Sähköposti" required>
+                        
+                        <div id="userController">
+                            <input id="user" name="user" type="user" class="form-control" placeholder="Käyttäjätunnus" required>
+                        </div>
+                        
+                        <input id="password" name="password" type="password" class="form-control" placeholder="Salasana" required>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Rekisteröidy</button>
+                    </form>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-10 blog-main">
+                    Copyright (C) Samu Laaksonen, kaikki oikeudet pidätetään
+                </div>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="/bootstrap/js/bootstrap.min.js"></script>
+        
+        <script type="text/javascript">
+        
+            $( "#registerForm" ).submit(function( event ) {
+            
+                event.preventDefault();
+            
+                if ($("#userController").hasClass("has-error") || $("#nameController").hasClass("has-error"))
+                {
+                    alert("Tarkasta profiilitiedot");
+                    return;
+                }
+                else if (!valid($("#email").val()))
+                {
+                    alert("Sähköposti ei voi olla tyhjä");
+                    return;
+                }
+                else if (!valid($("#password").val()))
+                {
+                    alert("Salasana ei voi olla tyhjä");
+                    return;
+                }
+                
+                $.post( "/register", { user: $("#user").val(), name: $("#name").val(), email : $("#email").val(), password : $("#password").val() }, function(data) {
+                
+                    var response = jQuery.parseJSON(data);
+                    
+                    $("#user").val("");
+                    $("#name").val("");
+                    $("#email").val("");
+                    $("#password").val("");
+                    
+                    if (response.registerSuccess == 1)
+                    {
+                        alert("Käyttäjä on luotu, voit nyt kirjautua tunnuksillasi sisään");
+                    }
+                    else
+                    {
+                        alert("Käyttäjän luominen epäonnistui");
+                    }
+                });
+           });
+        
+            function valid(str)
+            {
+                if (!str|| !str.length || /^\s*$/.test(str))
+                    return false;
+                    
+                return true;
+            }
+            
+            function validAccountDetails()
+            {
+                var validated = false;
+                if (!valid($( "#name" ).val()))
+                    validated = false;
+                else if (!valid($( "#user" ).val()))
+                    validated = false;
+                else
+                    validated= true;
+                
+                if ( !validated )
+                {
+                    $("#userController").removeClass("has-error").removeClass("has-success");
+                    $("#nameController").removeClass("has-error").removeClass("has-success");
+                }
+                
+                return validated;
+            }
+        
+            $( "#name" ).keyup(function() {
+
+                if (!validAccountDetails())
+                    return;
+
+                checkAvailability($( "#user" ).val(), $( "#name" ).val());
+            });
+            
+            $( "#user" ).keyup(function() {
+            
+                if (!validAccountDetails())
+                    return;
+                
+                checkAvailability($( "#user" ).val(), $( "#name" ).val());
+            });
+            
+            function checkAvailability(user, name)
+            {
+                $.post( "/register/available", { user: user, name: name }, function(data) {
+                
+                    var response = jQuery.parseJSON(data);
+                
+                    $("#nameController").removeClass("has-error");
+                    $("#userController").removeClass("has-error").removeClass("has-success");
+                
+                    if (response.available === 1)
+                    {
+                        $("#userController").addClass("has-success");
+                        
+                        console.log("account available");
+                    }
+                    else
+                    {
+                        console.log("account not available");
+                    
+                        if (response.err === "user" || response.err === "user_exists")
+                            $("#userController").addClass("has-error");
+                        else if (response.err === "name" || response.err === "name_len")
+                            $("#nameController").addClass("has-error");
+                    }
+                });
+            }
+            
+        </script>
+    </body>
+</html>

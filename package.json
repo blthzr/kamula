@@ -1,0 +1,37 @@
+{
+  "name": "kamula",
+  "version": "0.4.23",
+  "description": "Best thing since sliced bread",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "assert": "~1.1.1",
+    "connect-ensure-login": "~0.1.1",
+    "ejs": "~0.8.5",
+    "express": "~3.4.8",
+    "mongoose": "~3.8.8",
+    "node-regexp": "~0.1.1",
+    "passport-http": "~0.2.2",
+    "passport": "~0.2.0",
+    "passport-local": "~1.0.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.18.2"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://farokfek@bitbucket.org/farokfek/kamula.git"
+  },
+  "keywords": [
+    "kamula",
+    "socialmedia",
+    "friends"
+  ],
+  "author": "Samu Laaksonen",
+  "license": "ISC"
+}
